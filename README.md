@@ -1,37 +1,95 @@
-## Welcome to GitHub Pages
+## Lab 6
 
-You can use the [editor on GitHub](https://github.com/briannawei/cit281-lab06/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+### lab-06.js
 ```
+class Book {
+    constructor(title, author, pubDate, isbn) {
+      this.title = title;
+      this.author = author;
+      this.pubDate = pubDate;
+      this.isbn = isbn;
+    }
+}
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+class Library {
+    constructor(name) {
+      this._name = name;
+      this._books = [];
+    }
+    get books() {
+      // Return copy of books
+      return JSON.parse(JSON.stringify(this._books));
+    }
+    get count() {
+      return this._books.length;
+    }
+    addBook(book = {}) {
+      const { title = "", author = "", pubDate = "", isbn = "" } = book;
+      if (title.length > 0 && author.length > 0) {
+        const newBook = new Book(title, author, pubDate, isbn);  // { title, author, pubDate, isbn }
+        this._books.push(newBook);
+      }
+    }
+    deleteBook(isbn) {
+        // (1) Find the index of the book with given isbn within the "_books" array
+        let indexOfBookToRemove = null;
+        /*
+        let index = 0;
+        for (const book of this._books) {
+            if (book.isbn == isbn) {
+                indexOfBookToRemove = index;
+                break;
+            }
+            index += 1;
+        }
+        */
 
-### Jekyll Themes
+        for (let index = 0; index < this.books.length; index++){
+            const book = this.books[index];
+            if (book.isbn == isbn) {
+                indexOfBookToRemove = index;
+                break;
+            }
+        }
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/briannawei/cit281-lab06/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+        /*
+        varible = null
+        loop (for/while) {
+            filtering (if) {
+                modify/update variable
 
-### Support or Contact
+                (potentially -- but not necessarily -- exit th eloop early)
+            }
+        }
+        // variable is ready to go
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+        */
+
+        // (2) Once the index has been found, remove the entry from "_books"
+        this._books.splice(indexOfBookToRemove, 1);
+    }
+    listBooks() {
+      for (const book of this._books) {
+        const {title, author, pubDate, isbn} = book;
+        console.log(`Title: ${title}, Author: ${author}, PubDate: ${pubDate}, ISBN: ${isbn}`)
+      }
+    }
+}
+
+const myBook = new Book("AP Calc Crash Course", "Banu et al.", "01/01/2013", "1234567890");
+
+// Create a book
+const atomicHabits = new Book("Atomic Habits", "James Clear", "10/16/2018", "0987654321");
+
+let uoLibrary = new Library("Knight Library");
+console.log("ADDING BOOKS")
+uoLibrary.addBook(myBook);
+uoLibrary.addBook(atomicHabits);
+uoLibrary.listBooks();
+console.log("DELETING BOOKS")
+uoLibrary.deleteBook("1234567890");
+uoLibrary.listBooks();
+
+```
